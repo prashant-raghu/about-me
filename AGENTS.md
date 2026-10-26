@@ -25,6 +25,7 @@ Tailwind CSS 4, npm, Node 22.18 or newer.
 | `src/app/globals.css` | palettes, fonts, the `mono` utility, the phone breakpoint |
 | `src/components/theme-toggle.tsx` | the theme toggle, the only client component |
 | `scripts/check-copy.mjs` | copy guard: no hyphens or dashes |
+| `scripts/contrast.mjs` | contrast guard: every text colour meets WCAG AA in both palettes |
 | `.claude/skills/verify-app/` | launch, drive and verify the app end to end |
 
 ## Commands
@@ -32,12 +33,14 @@ Tailwind CSS 4, npm, Node 22.18 or newer.
 ```bash
 npm ci                                  # install from the lockfile
 npm run dev                             # http://localhost:3000
-npm run build                           # runs check:copy first; every route must show as ○ (Static)
+npm run build                           # runs check:copy and check:contrast first; every route must show as ○ (Static)
 npm start                               # serve the build
 npm run lint
 npm run check:copy                      # fails on a hyphen or dash in profile.ts copy
+npm run check:contrast                  # fails on a text colour under 4.5:1 in globals.css
 npx tsc --noEmit                        # after a build or dev run
 bash .claude/skills/verify-app/run.sh   # build, serve, drive, screenshot, clean up
+LIGHTHOUSE=1 bash .claude/skills/verify-app/run.sh   # plus Lighthouse mobile, 95+ each
 ```
 
 Every "verify it works" step goes through the `verify-app` skill.
@@ -75,6 +78,13 @@ CI: `.github/workflows/ci.yml` runs `npm ci`, `npm run lint`, `npx next typegen 
   `text-muted`, `border-line`). Change a palette there; do not use `dark:`.
   `icon.svg` and `opengraph-image.tsx` cannot read CSS variables and copy the
   hex values, so change them with the palette.
+- **Accessible.** Every text colour meets WCAG AA (4.5:1) on its background
+  in both palettes; `check:contrast` reads `globals.css` and fails the build
+  on a pair under 4.5:1.
+  Focus shows the `:focus-visible` ring from `globals.css`; never remove an
+  outline. Links and buttons carry the `tap-target` utility (at least 44px to
+  tap, drawn size unchanged). The toggle's name stays "Dark theme" and
+  `aria-pressed` carries the state.
 - **Match the mockup.** The design was approved as is; do not restyle it.
 - **Tailwind 4 is configured in CSS.** There is no `tailwind.config.js`.
   `sm:` is redefined as 520px, the mockup's phone breakpoint, and styles are

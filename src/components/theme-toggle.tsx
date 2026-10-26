@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useSyncExternalStore } from "react";
 
 type Theme = "light" | "dark";
 
@@ -21,7 +21,19 @@ function applyTheme(theme: Theme) {
   classes.toggle("light", theme === "light");
 }
 
+const isDark = () => document.documentElement.classList.contains("dark");
+
+// The theme lives in <html>'s class list; re-render whenever it changes.
+function subscribe(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, { attributeFilter: ["class"] });
+  return () => observer.disconnect();
+}
+
 export function ThemeToggle() {
+  // Unknown on the server, so aria-pressed is left off until hydration.
+  const dark = useSyncExternalStore<boolean | undefined>(subscribe, isDark, () => undefined);
+
   // The inline script in layout.tsx sets the theme before paint. This keeps it
   // in step with the system when no choice is stored, and re-applies it after
   // React's dev remount clears <html> classes (a no-op in production).
@@ -34,7 +46,7 @@ export function ThemeToggle() {
   }, []);
 
   function toggle() {
-    const next: Theme = document.documentElement.classList.contains("dark") ? "light" : "dark";
+    const next: Theme = isDark() ? "light" : "dark";
     applyTheme(next);
     try {
       localStorage.setItem("theme", next);
@@ -43,12 +55,15 @@ export function ThemeToggle() {
     }
   }
 
+  // A fixed name with aria-pressed, so a screen reader hears "Dark theme,
+  // pressed" or "not pressed". The 32px circle taps as 44px (tap-target).
   return (
     <button
       type="button"
-      aria-label="Toggle theme"
+      aria-label="Dark theme"
+      aria-pressed={dark}
       onClick={toggle}
-      className="grid size-8 flex-none cursor-pointer place-items-center rounded-full border border-line bg-transparent text-muted"
+      className="tap-target grid size-8 flex-none cursor-pointer place-items-center rounded-full border border-line bg-transparent text-muted"
     >
       <svg
         viewBox="0 0 24 24"

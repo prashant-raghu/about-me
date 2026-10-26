@@ -13,9 +13,10 @@ Needs Node 22.18 or newer and npm.
 ```bash
 npm install
 npm run dev     # http://localhost:3000
-npm run build   # checks the copy, then builds; / must show as ○ (Static)
+npm run build   # checks the copy and contrast, then builds; / must show as ○ (Static)
 npm start       # serves the build on http://localhost:3000
 npm run lint
+npm run check:contrast   # every text colour meets WCAG AA in both themes
 ```
 
 ## Edit the content
@@ -31,9 +32,11 @@ bash .claude/skills/verify-app/run.sh
 ```
 
 Builds from clean, serves the page, drives it in headless Chromium (both
-themes at 1280px and 390px, the theme toggle, every link, the request log)
-and saves screenshots and a report under `.fredrin/tmp/verify-app/`. See
-`.claude/skills/verify-app/SKILL.md`.
+themes at 1280, 320, 390 and 430px, the theme toggle and its first frame,
+keyboard focus, tap targets, every link, the request log) and saves
+screenshots and a report under `.fredrin/tmp/verify-app/`. With
+`LIGHTHOUSE=1` it also runs Lighthouse mobile and fails under 95 in any
+category. See `.claude/skills/verify-app/SKILL.md`.
 
 ## Deploy
 

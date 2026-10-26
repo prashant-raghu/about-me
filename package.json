@@ -8,11 +8,12 @@
   },
   "scripts": {
     "dev": "next dev",
-    "prebuild": "npm run check:copy",
+    "prebuild": "npm run check:copy && npm run check:contrast",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "check:copy": "node scripts/check-copy.mjs"
+    "check:copy": "node scripts/check-copy.mjs",
+    "check:contrast": "node scripts/contrast.mjs"
   },
   "dependencies": {
     "next": "16.4.3",

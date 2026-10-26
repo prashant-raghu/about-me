@@ -76,7 +76,7 @@ export default function Home() {
               <a
                 key={link.href}
                 href={link.href}
-                className="border-b border-line pb-px text-fg hover:border-fg"
+                className="tap-target border-b border-line pb-px text-fg hover:border-fg"
               >
                 {link.label}
               </a>
@@ -88,12 +88,12 @@ export default function Home() {
       <footer className="mono mt-16 flex flex-wrap gap-x-5 gap-y-1.5 border-t border-line pt-5 text-faint">
         <span>
           {footer.credit.prefix}{" "}
-          <a href={footer.credit.href} className="border-b border-line text-muted">
+          <a href={footer.credit.href} className="tap-target border-b border-line text-muted">
             {footer.credit.label}
           </a>
         </span>
         <span>
-          <a href={footer.source.href} className="border-b border-line text-muted">
+          <a href={footer.source.href} className="tap-target border-b border-line text-muted">
             {footer.source.label}
           </a>
         </span>

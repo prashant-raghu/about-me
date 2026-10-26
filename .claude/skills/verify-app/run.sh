@@ -41,7 +41,7 @@ trap 'kill "$SERVER" 2>/dev/null || true' EXIT
 # Ready means usable: the served HTML holds the name and the toggle, not just a 200.
 curl -sf --retry 30 --retry-connrefused --retry-delay 1 "$URL" -o "$RUN/index.html"
 grep -q '<h1[^>]*>Prashant Raghu</h1>' "$RUN/index.html"
-grep -q 'aria-label="Toggle theme"' "$RUN/index.html"
+grep -q 'aria-label="Dark theme"' "$RUN/index.html"
 echo "READY  $URL (pid $SERVER)"
 
 # Copy check on the served HTML. Drop <script> and <style> bodies first: the
@@ -54,3 +54,28 @@ fi
 echo "PASS  no hyphens or dashes in served visible text"
 
 node .claude/skills/verify-app/drive.mjs --url "$URL" --out "$RUN" --pw "$PW"
+
+# Optional, LIGHTHOUSE=1: Lighthouse's default config (mobile) against the same
+# server. Google Chrome cannot start in sandboxed sessions; the Playwright
+# headless shell can. Every category must score 95 or more.
+if [ "${LIGHTHOUSE:-0}" = 1 ]; then
+  LH="$ROOT/lh"
+  if [ ! -d "$LH/node_modules/lighthouse" ]; then
+    npm install --prefix "$LH" --no-save --no-package-lock lighthouse@12.8.2
+  fi
+  CHROME_PATH="${CHROME_PATH:-$HOME/.cache/ms-playwright/chromium_headless_shell-1228/chrome-headless-shell-linux64/chrome-headless-shell}" \
+    node "$LH/node_modules/lighthouse/cli/index.js" "$URL" --form-factor=mobile \
+    --only-categories=performance,accessibility,best-practices,seo \
+    --chrome-flags="--headless --no-sandbox --disable-gpu" \
+    --output=json --output=html --output-path="$RUN/lighthouse" --quiet
+  node -e '
+    const { categories } = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
+    let low = 0;
+    for (const { title, score } of Object.values(categories)) {
+      const pass = score >= 0.95;
+      low += pass ? 0 : 1;
+      console.log(`${pass ? "PASS" : "FAIL"}  [lighthouse] ${title} ${Math.round(score * 100)}`);
+    }
+    process.exit(low ? 1 : 0);
+  ' "$RUN/lighthouse.report.json"
+fi

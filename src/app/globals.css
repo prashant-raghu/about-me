@@ -4,12 +4,14 @@
 /*
  * Two palettes. The inline script in layout.tsx puts `light` or `dark` on
  * <html> before first paint; the media query covers visitors without JS.
+ * Every text colour meets WCAG AA (4.5:1) on the background it sits on:
+ * `npm run check:contrast` checks it before every build.
  */
 :root {
   --bg: #fafafa;
   --fg: #111111;
   --muted: #6b6b6b;
-  --faint: #a3a3a3;
+  --faint: #737373;
   --line: #e5e5e5;
   --chip: #f0f0f0;
   color-scheme: light;
@@ -19,7 +21,7 @@
   --bg: #0b0b0b;
   --fg: #ededed;
   --muted: #9a9a9a;
-  --faint: #5c5c5c;
+  --faint: #797979;
   --line: #232323;
   --chip: #161616;
   color-scheme: dark;
@@ -30,10 +32,18 @@
     --bg: #0b0b0b;
     --fg: #ededed;
     --muted: #9a9a9a;
-    --faint: #5c5c5c;
+    --faint: #797979;
     --line: #232323;
     --chip: #161616;
     color-scheme: dark;
+  }
+}
+
+/* Keyboard focus: one ring in the text colour, visible in both themes. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 2px;
   }
 }
 
@@ -57,4 +67,22 @@
   font-family: var(--font-mono);
   font-size: 13px;
   letter-spacing: 0.01em;
+}
+
+/*
+ * At least 44px to tap on a phone without changing how anything looks or
+ * where it sits: a transparent box centred on the element takes the taps.
+ */
+@utility tap-target {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, 44px);
+    height: max(100%, 44px);
+    translate: -50% -50%;
+  }
 }
