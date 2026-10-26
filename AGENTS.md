@@ -39,6 +39,8 @@ bash .claude/skills/verify-app/run.sh   # build, serve, drive, screenshot, clean
 
 Every "verify it works" step goes through the `verify-app` skill.
 
+CI: `.github/workflows/ci.yml` runs `npm ci`, `npm run lint`, `npx next typegen && npx tsc --noEmit` (typegen because a fresh checkout has no `.next/types`), `npm run check:copy` and `npm run build`, in that order, on every pull request and every push to `main`.
+
 ## Conventions
 
 - **No hyphens or dashes in visible copy.** Not `-`, `–` or `—`. Write "long
