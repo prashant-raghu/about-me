@@ -1,0 +1,60 @@
+/* Classes only live in src/; keep Tailwind from scanning the rest of the repo. */
+@import "tailwindcss" source("..");
+
+/*
+ * Two palettes. The inline script in layout.tsx puts `light` or `dark` on
+ * <html> before first paint; the media query covers visitors without JS.
+ */
+:root {
+  --bg: #fafafa;
+  --fg: #111111;
+  --muted: #6b6b6b;
+  --faint: #a3a3a3;
+  --line: #e5e5e5;
+  --chip: #f0f0f0;
+  color-scheme: light;
+}
+
+:root.dark {
+  --bg: #0b0b0b;
+  --fg: #ededed;
+  --muted: #9a9a9a;
+  --faint: #5c5c5c;
+  --line: #232323;
+  --chip: #161616;
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --bg: #0b0b0b;
+    --fg: #ededed;
+    --muted: #9a9a9a;
+    --faint: #5c5c5c;
+    --line: #232323;
+    --chip: #161616;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--line);
+  --color-chip: var(--chip);
+}
+
+@theme {
+  --font-sans: ui-sans-serif, -apple-system, "Inter", "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  /* Below this width the page switches to its phone layout. */
+  --breakpoint-sm: 32.5rem;
+}
+
+@utility mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.01em;
+}
