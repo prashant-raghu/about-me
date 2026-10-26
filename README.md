@@ -40,4 +40,9 @@ and saves screenshots and a report under `.fredrin/tmp/verify-app/`. See
 Vercel builds every push to `main` of
 https://github.com/prashant-raghu/about-me with the default Next.js settings.
 
+Set `NEXT_PUBLIC_SITE_URL` in the Vercel project to the public URL (see
+`.env.example`). It is the base for the canonical link, the share image URL,
+`robots.txt` and the sitemap; unset, Vercel's production domain is used.
+Preview deployments serve their own share image URL.
+
 Created with [Fredrin](https://fredrin.com).

@@ -23,5 +23,5 @@ These values are hard coded in `drive.mjs` from the ticket, not read from
 
 `drive.mjs` records every request from every scenario and fails if any URL's
 origin differs from the page's. `report.json` keeps the full list. Expect only
-`/` and `/_next/static/...` (plus `/favicon.ico` once a favicon exists). No
+`/` and `/_next/static/...` (plus `/icon.svg?...` if the browser fetches the favicon). No
 analytics, third party scripts, cookies or external font requests.

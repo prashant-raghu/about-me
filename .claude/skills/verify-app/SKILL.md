@@ -5,7 +5,8 @@ description: Launch, drive and verify the About Me site (Next.js, one static pag
 
 # verify-app
 
-The app is one statically rendered route, `/`. It has no database, no API
+The app is one statically rendered page, `/`, plus its static metadata
+routes (favicon, share image, robots, sitemap). It has no database, no API
 routes and no data dir. Its only state is the `.next` build and the visitor's
 `localStorage.theme`. This skill builds it from clean, serves it, drives it
 in headless Chromium and keeps the evidence.
@@ -73,7 +74,10 @@ If Chromium is missing: `npx playwright-core@1.61.0 install chromium-headless-sh
 
 ## Drive
 
-Routes: `/` only (plus the built in `/_not-found`). Dev server:
+Routes: the page `/`, plus the metadata routes `/icon.svg`,
+`/opengraph-image`, `/robots.txt` and `/sitemap.xml` (see
+[features/metadata-and-sharing.md](features/metadata-and-sharing.md)) and the
+built in `/_not-found`. Dev server:
 `npm run dev` on port 3000. Production: `npm run build && npm start`.
 
 Driver: `node .claude/skills/verify-app/drive.mjs --url http://127.0.0.1:$PORT/ --out <dir> [--pw <playwright prefix>]`.
@@ -140,3 +144,4 @@ it and what must hold:
 - [features/page-content.md](features/page-content.md): the page content and layout.
 - [features/theme-toggle.md](features/theme-toggle.md): light and dark, the toggle, no flash.
 - [features/links-and-footer.md](features/links-and-footer.md): contact and footer links, same origin requests.
+- [features/metadata-and-sharing.md](features/metadata-and-sharing.md): title, description, canonical, OpenGraph and Twitter tags, the preview image, the favicon, robots and sitemap.
